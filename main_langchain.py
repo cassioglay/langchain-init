@@ -16,4 +16,13 @@ atividade = "praia"
 prompt = f"Crie um roteiro de viagem de {numero_de_dias} dias, para uma família com {numero_de_criancas} crianças, que gostam de {atividade}."
 print(prompt)
 
-llm = ChatGroq
+llm = ChatGroq(
+    model="mixtral-8x7b-32768",
+    temperature=0.5,
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
+)
+
+reposnse = llm.invoke(prompt)
+print(reposnse.content)
