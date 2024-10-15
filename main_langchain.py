@@ -1,13 +1,8 @@
 import os
 from langchain_groq import ChatGroq
-from groq import Groq
 from dotenv import load_dotenv
+
 load_dotenv()
-
-
-client = Groq(
-    api_key=os.getenv("GROQ_API_KEY"),
-)
 
 numero_de_dias = 7
 numero_de_criancas = 2
@@ -17,6 +12,7 @@ prompt = f"Crie um roteiro de viagem de {numero_de_dias} dias, para uma família
 print(prompt)
 
 llm = ChatGroq(
+    api_key=os.getenv("GROQ_API_KEY"),
     model="mixtral-8x7b-32768",
     temperature=0.5,
     max_tokens=None,
