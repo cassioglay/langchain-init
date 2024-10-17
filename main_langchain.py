@@ -1,5 +1,7 @@
 import os
 from langchain_groq import ChatGroq
+from langchain_core.prompts import PromptTemplate
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -8,7 +10,16 @@ numero_de_dias = 7
 numero_de_criancas = 2
 atividade = "praia"
 
-prompt = f"Crie um roteiro de viagem de {numero_de_dias} dias, para uma família com {numero_de_criancas} crianças, que gostam de {atividade}."
+modelo_do_prompt = PromptTemplate.from_template(
+    "Crie um roteiro de viagem de {dias} dias, para uma família com {criancas} crianças, que gostam de {atividade}."
+)
+
+prompt = modelo_do_prompt.format(
+    dias=numero_de_dias,
+    criancas=numero_de_criancas,
+    atividade=atividade
+)
+
 print(prompt)
 
 llm = ChatGroq(
