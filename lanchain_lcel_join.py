@@ -7,6 +7,8 @@ from langchain_core.globals import set_debug
 from langchain_core.pydantic_v1 import Field, BaseModel
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 
+from operator import itemgetter
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -51,17 +53,29 @@ prompt3 = PromptTemplate(
     partial_variables={"formatacao_de_saida": parseador.get_format_instructions()}
 )
 
+prompt4 = ChatPromptTemplate.from_messages(
+    [
+    ("ai","Sugestão de viagem para a cidade: {cidade}"),
+    ("ai","Restaurantes que você não pode perder: {restaurantes}"),
+    ("ai","Atividades e locais culturais recomendados: {locais_culturais}"),
+    ("system","Combine as informações anteriores em 2 parágrafos coerentes")
+    ]
+)
+
 parte1 = prompt1 | llm | parseador 
 
 parte2 = prompt2 | llm  | StrOutputParser()
 
 parte3 = prompt3 | llm  | StrOutputParser()
 
-""" Add dictionary to parte2 and parte3 """
+parte4 = prompt4 | llm| StrOutputParser()
+
+"""(itemgetter) Get item from brothers ex: parte1, parte2, parte3 """
 cadeia = (parte1 | {
     "restaurantes" : parte2, 
-    "locais_culturais": parte3
-})
+    "locais_culturais": parte3,
+    "cidade" : itemgetter("cidade") 
+} | parte4)
 
 response = cadeia.invoke({"interesse": "praias"})
 
